@@ -24,25 +24,24 @@ personeelslid = db.execute_query(select_query)
 # altijd verbinding sluiten met de database als je klaar bent
 db.close()
 
-pprint.pp(personeelslid) # print de resultaten van de query op een overzichtelijke manier
-print(personeelslid[0]['naam']) # voorbeeld van hoe je bij een eigenschap komt
-
-
 
 # Haal alle onderhoudstaken op
 # altijd verbinding openen om query's uit te voeren
 db.connect()
 
 # pas deze query aan en voeg queries toe om de juiste onderhoudstaken op te halen
-select_query = "SELECT * FROM onderhoudstaak"
+select_query = "SELECT * FROM onderhoudstaak WHERE beroepstype = 'Mechanisch Monteur' AND bevoegdheid = 'Senior'"
 onderhoudstaken = db.execute_query(select_query)
-
+pprint.pp(onderhoudstaken)
 # altijd verbinding sluiten met de database als je klaar bent
 db.close()
 
-#pprint.pp(onderhoudstaken) # print de resultaten van de query op een overzichtelijke manier
-
-
+# Bereken het totale duur van de onderhoudstaken
+totale_duur = sum(
+    taak.get("duur", 0)
+    for taak in onderhoudstaken
+    if isinstance(taak.get("duur"), (int, float))
+)
 
 # verzamel alle benodigde gegevens in een dictionary
 dagtakenlijst = {
@@ -58,9 +57,11 @@ dagtakenlijst = {
     "weergegevens" : {
         # STAP 4: vul aan met weergegevens
     }, 
-    "dagtaken": [] # STAP 2: hier komt een lijst met alle dagtaken
+    "dagtaken": [
+        onderhoudstaken
+    ] 
     ,
-    "totale_duur": 0 # STAP 3: aanpassen naar daadwerkelijke totale duur
+    "totale_duur": totale_duur 
 }
 
 # uiteindelijk schrijven we de dictionary weg naar een JSON-bestand, die kan worden ingelezen door de acceptatieomgeving
