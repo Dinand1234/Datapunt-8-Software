@@ -65,5 +65,5 @@ dagtakenlijst = {
 }
 
 # uiteindelijk schrijven we de dictionary weg naar een JSON-bestand, die kan worden ingelezen door de acceptatieomgeving
-with open('dagtakenlijst_personeelslid_x.json', 'w') as json_bestand_uitvoer:
+with open('dagtakenlijst_personeelslid_' + personeelslid[0]["naam"] + '.json', 'w') as json_bestand_uitvoer:
     json.dump(dagtakenlijst, json_bestand_uitvoer, indent=4)
